@@ -1,0 +1,5 @@
+---
+  - name: create cgi-directory
+    file: path=/usr/lib/cgi-bin/keystone state=directory owner=keystone group=keystone mode=0755
+  - name: copy cgi-bin script to /usr/lib/cgi-bin/keystone directory
+    copy: src=roles/common/files/ dest=/usr/lib/cgi-bin/keystone/{main,admin} owner=keystone group=keystone mode=0644
