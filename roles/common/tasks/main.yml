@@ -16,10 +16,10 @@
   - include_vars: main.yml
   - set_fact: items={{main_settings}}
   - name: site-avaliable-main
-    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-available/05-keystone_wsgi_main.conf backup=yes
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-available/05-keystone_wsgi_main.conf backup=yes owner=keystone group=keystone mode=0755
   - set_fact: items={{admin_settings}}
   - name: site-avaliable-admin
-    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-available/05-keystone_wsgi_admin.conf backup=yes
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-available/05-keystone_wsgi_admin.conf backup=yes owner=keystone group=keystone mode=0755
   - name: stop keystone
     service: name=keystone state=stopped enabled=no
   - name: enable  keystone-admin
