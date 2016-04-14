@@ -21,10 +21,11 @@
   ErrorLog "/var/log/apache2/keystone_wsgi_{{items.role}}.log"
   ServerSignature Off
   CustomLog "/var/log/apache2/keystone_wsgi_{{items.role}}_access.log" "%h %l %u %t \"%r\" %>s %b %D \"%{Referer}i\" \"%{User-Agent}i\""
-  WSGIDaemonProcess keystone_{{items.role}} display-name=keystone-{{items.role}} group=keystone processes=2 threads=3 user=keystone
+  WSGIDaemonProcess keystone_{{items.role}} display-name=keystone-{{items.role}} group=keystone processes={{ansible_processor_vcpus | default(2)}} threads={{ansible_processor_vcpus | default (1)}} user=keystone 
   WSGIProcessGroup keystone_{{items.role}}
   WSGIScriptAlias / "/usr/lib/cgi-bin/keystone/{{items.role}}"
-
+  WSGIApplicationGroup %{GLOBAL}
+  WSGIPassAuthorization On
   ## Custom fragment
 LimitRequestFieldSize 81900
 </VirtualHost>
