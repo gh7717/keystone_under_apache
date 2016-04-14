@@ -1,0 +1,6 @@
+admin_settings:
+  port: 35357
+  role: admin
+main_settings:
+  port: 5000
+  role: main

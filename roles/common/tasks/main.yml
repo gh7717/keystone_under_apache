@@ -1,5 +1,31 @@
 ---
-  - name: create cgi-directory
-    file: path=/usr/lib/cgi-bin/keystone state=directory owner=keystone group=keystone mode=0755
+# copy cgi-bin scripts to run keystone under apache
+  - name: create directory /usr/lib/cgi-bin/keystone
+    file: path=/usr/lib/cgi-bin/keystone state=directory mode=0755
   - name: copy cgi-bin script to /usr/lib/cgi-bin/keystone directory
-    copy: src=roles/common/files/ dest=/usr/lib/cgi-bin/keystone/{main,admin} owner=keystone group=keystone mode=0644
+    copy: src=roles/common/files/keystone-cgi.py dest=/usr/lib/cgi-bin/keystone/admin owner=keystone group=keystone mode=0644
+
+  - name: copy cgi-bin script to /usr/lib/cgi-bin/keystone directory
+    copy: src=roles/common/files/keystone-cgi.py dest=/usr/lib/cgi-bin/keystone/main owner=keystone group=keystone mode=0644
+
+# define ports 35357 and 5000 for keystone
+  - name: add open ports for keystone
+    copy: src=roles/common/files/ports.conf dest=/etc/apache2/ports.conf backup=yes
+
+# create and enable virtual hosts for kestone workers
+  - set_fact: items=main_settings
+
+  - debug: var=items
+
+  - name: site-enabled-main
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-enabled/05-keystone_wsgi_main.conf backup=yes
+
+  - name: site-avaliable-main
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-avaliable/05-keystone_wsgi_main.conf backup=yes
+
+  - set_fact: items=admin_settings
+  - name: site-enabled-admin
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-enabled/05-keystone_wsgi_admin.conf backup=yes
+
+  - name: site-avaliable-admin
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-avaliable/05-keystone_wsgi_admin.conf backup=yes

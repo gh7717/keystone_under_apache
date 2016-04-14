@@ -3,8 +3,8 @@
 # Managed by Puppet
 # ************************************
 
-<VirtualHost *:{{port}}>
-  ServerName {{fqdn}}
+<VirtualHost *:{{items.port}}>
+  ServerName {{ansible_fqdn}}
 
   ## Vhost docroot
   DocumentRoot "/usr/lib/cgi-bin/keystone"
@@ -18,12 +18,12 @@
   </Directory>
 
   ## Logging
-  ErrorLog "/var/log/apache2/keystone_wsgi_{{role}}.log"
+  ErrorLog "/var/log/apache2/keystone_wsgi_{{items.role}}.log"
   ServerSignature Off
-  CustomLog "/var/log/apache2/keystone_wsgi_{{role}}_access.log" "%h %l %u %t \"%r\" %>s %b %D \"%{Referer}i\" \"%{User-Agent}i\""
-  WSGIDaemonProcess keystone_{{role}} display-name=keystone-{{role}} group=keystone processes=2 threads=3 user=keystone
-  WSGIProcessGroup keystone_{{role}}
-  WSGIScriptAlias / "/usr/lib/cgi-bin/keystone/{{role}}"
+  CustomLog "/var/log/apache2/keystone_wsgi_{{items.role}}_access.log" "%h %l %u %t \"%r\" %>s %b %D \"%{Referer}i\" \"%{User-Agent}i\""
+  WSGIDaemonProcess keystone_{{items.role}} display-name=keystone-{{items.role}} group=keystone processes=2 threads=3 user=keystone
+  WSGIProcessGroup keystone_{{items.role}}
+  WSGIScriptAlias / "/usr/lib/cgi-bin/keystone/{{items.role}}"
 
   ## Custom fragment
 LimitRequestFieldSize 81900
