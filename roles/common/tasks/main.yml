@@ -13,19 +13,33 @@
     copy: src=roles/common/files/ports.conf dest=/etc/apache2/ports.conf backup=yes
 
 # create and enable virtual hosts for kestone workers
-  - set_fact: items=main_settings
-
-  - debug: var=items
-
-  - name: site-enabled-main
-    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-enabled/05-keystone_wsgi_main.conf backup=yes
-
+  - include_vars: main.yml
+  - set_fact: items={{main_settings}}
   - name: site-avaliable-main
-    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-avaliable/05-keystone_wsgi_main.conf backup=yes
-
-  - set_fact: items=admin_settings
-  - name: site-enabled-admin
-    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-enabled/05-keystone_wsgi_admin.conf backup=yes
-
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-available/05-keystone_wsgi_main.conf backup=yes
+  - set_fact: items={{admin_settings}}
   - name: site-avaliable-admin
-    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-avaliable/05-keystone_wsgi_admin.conf backup=yes
+    template:  src=roles/common/temlates/05-keystone_wsgi.conf.j2 dest=/etc/apache2/sites-available/05-keystone_wsgi_admin.conf backup=yes
+  - name: stop keystone
+    service: name=keystone state=stopped enabled=no
+  - name: enable  keystone-admin
+    command: a2ensite 05-keystone_wsgi_admin.conf
+  - name: enable  keystone-main
+    command: a2ensite 05-keystone_wsgi_main.conf
+  - name: reload apache
+    service: name=apache2 state=reloaded
+# install needed packages
+#  - name: check if apache is installed
+#    command: dpkg-query -l apache2
+#    register: is_installed
+#
+#  - name: install apache
+#    apt: name=apache2 state=present
+#    when: is_installed.rc==1
+#
+#  - name: check if libapache2-mod-wsgi is  installed
+#    command: dpkg-query -l libapache2-mod-wsgi
+#    register: is_installed
+#  - name: install libapache2-mod-wsgi
+#    apt: name=libapache2-mod-wsgi state=present
+#    when: is_installed.rc==1
