@@ -3,10 +3,10 @@
   - name: create directory /usr/lib/cgi-bin/keystone
     file: path=/usr/lib/cgi-bin/keystone state=directory mode=0755
   - name: copy cgi-bin script to /usr/lib/cgi-bin/keystone directory
-    copy: src=roles/common/files/keystone-cgi.py dest=/usr/lib/cgi-bin/keystone/admin owner=keystone group=keystone mode=0644
+    copy: src=roles/common/files/keystone-cgi.py dest=/usr/lib/cgi-bin/keystone/admin owner=keystone group=keystone mode=0755
 
   - name: copy cgi-bin script to /usr/lib/cgi-bin/keystone directory
-    copy: src=roles/common/files/keystone-cgi.py dest=/usr/lib/cgi-bin/keystone/main owner=keystone group=keystone mode=0644
+    copy: src=roles/common/files/keystone-cgi.py dest=/usr/lib/cgi-bin/keystone/main owner=keystone group=keystone mode=0755
 
 # define ports 35357 and 5000 for keystone
   - name: add open ports for keystone
@@ -29,17 +29,17 @@
   - name: reload apache
     service: name=apache2 state=reloaded
 # install needed packages
-#  - name: check if apache is installed
-#    command: dpkg-query -l apache2
-#    register: is_installed
-#
-#  - name: install apache
-#    apt: name=apache2 state=present
-#    when: is_installed.rc==1
-#
-#  - name: check if libapache2-mod-wsgi is  installed
-#    command: dpkg-query -l libapache2-mod-wsgi
-#    register: is_installed
-#  - name: install libapache2-mod-wsgi
-#    apt: name=libapache2-mod-wsgi state=present
-#    when: is_installed.rc==1
+  - name: check if apache is installed
+    command: dpkg-query -l apache2
+    register: is_installed
+
+  - name: install apache
+    apt: name=apache2 state=present
+    when: is_installed.rc==1
+
+  - name: check if libapache2-mod-wsgi is  installed
+    command: dpkg-query -l libapache2-mod-wsgi
+    register: is_installed
+  - name: install libapache2-mod-wsgi
+    apt: name=libapache2-mod-wsgi state=present
+    when: is_installed.rc==1
